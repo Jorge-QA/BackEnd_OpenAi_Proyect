@@ -1,8 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const dotenv = require('dotenv'); // Agrega esta línea para cargar las variables de entorno
+dotenv.config(); // Carga las variables de entorno del archivo .env
 
 // database connection
-const db = mongoose.connect("mongodb://127.0.0.1:27017/proyect", {
+const db = mongoose.connect(process.env.DB_Connection, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });

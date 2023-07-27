@@ -1,8 +1,5 @@
 const router = require("express").Router();
 
-//para hacer uso del esquema del usuario
-//const User = require("../models/userModel");
-
 //para hacer uso del esquema del prompt
 const Prompt = require("../models/promptModel");
 

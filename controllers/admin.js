@@ -42,7 +42,7 @@ router.get("/users", (req, res) => {
         res.json({ error: err });
       });
   } else {
-    // get all courses
+    // get all users
     User.find()
       .then((users) => {
         res.json(users);
@@ -96,7 +96,7 @@ router.patch("/users", (req, res) => {
   }
 });
 
-//elimina un curso
+//elimina un usuario
 router.delete("/users", (req, res) => {
   // get user by id
   if (req.query && req.query.id) {

@@ -84,7 +84,10 @@ router.patch("/users", (req, res) => {
         user.phone = req.body.phone || user.phone;
         user.state = req.body.state || user.state;   //solo el admin puede controlarlo
         user.password = req.body.password || user.password;
-        user.tfa = req.body.tfa || user.tfa;
+        //user.tfa = req.body.tfa || user.tfa;
+        // actualiza aunque traiga un false:
+        user.tfa = req.body.hasOwnProperty('tfa') ? req.body.tfa : user.tfa;
+
 
         user
           .save()

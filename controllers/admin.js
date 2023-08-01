@@ -21,6 +21,17 @@ router.get("/users", (req, res) => {
         console.log("error while queryting the user", err);
         res.json({ error: "User doesnt exist" });
       });
+  } else if (req.query && req.query.id) {
+    // if (req.query && req.query.id) {  (traerlo por id)
+    User.findById({ _id: req.query.id }) //  
+      .then((user) => {
+        res.json(user);
+      })
+      .catch((err) => {
+        res.status(404);
+        console.log("error while queryting the user", err);
+        res.json({ error: "User doesnt exist" });
+      });
   } else if (req.query.sort === "asc") {
     User.find({rol : "client"})// fitra solo clientes
       .then((users) => {
@@ -70,7 +81,10 @@ router.patch("/users", (req, res) => {
         user.first_name = req.body.first_name || user.first_name;
         user.last_name = req.body.last_name || user.last_name;
         user.email = req.body.email || user.email;
-        user.state = req.body.state || user.state;
+        user.phone = req.body.phone || user.phone;
+        user.state = req.body.state || user.state;   //solo el admin puede controlarlo
+        user.password = req.body.password || user.password;
+        user.tfa = req.body.tfa || user.tfa;
 
         user
           .save()

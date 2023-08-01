@@ -14,12 +14,14 @@ const jwt = require("jsonwebtoken");
 const Joi = require("@hapi/joi");
 
 const schemaRegister = Joi.object({
-  first_name: Joi.string().min(4).max(255).required(),
-  last_name: Joi.string().min(4).max(255).required(),
+  first_name: Joi.string().min(3).max(255).required(),
+  last_name: Joi.string().min(3).max(255).required(),
   email: Joi.string().min(4).max(255).required().email(),
+  phone: Joi.string().min(4).max(255).required(),
   password: Joi.string().min(4).max(1024).required(),
   rol: Joi.string().min(4).max(255).required(),
   state: Joi.string().min(4).max(255).required(),
+  tfa: Joi.bool().required(), // para la autenticación de 2 factores
 });
 
 //esquema para validar login
@@ -51,7 +53,8 @@ router.post("/login", async (req, res) => {
       name: user.first_name,
       id: user._id,
       rol: user.rol,
-      state: user.state
+      state: user.state,
+      tfa : user.tfa
     },
     process.env.TOKEN_SECRET
   );
@@ -85,9 +88,11 @@ router.post("/register", async (req, res) => {
     first_name: req.body.first_name,
     last_name: req.body.last_name,
     email: req.body.email,
+    phone: req.body.phone,
     password: password,
     rol: req.body.rol,
-    state: req.body.state
+    state: req.body.state,
+    tfa: req.body.tfa
   });
 
   try {

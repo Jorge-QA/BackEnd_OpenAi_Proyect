@@ -12,7 +12,7 @@ router.get("/users", (req, res) => {
   // if an specific user is required
   if (req.query && req.query.first_name) {
     // if (req.query && req.query.id) {  (traerlo por nombre)
-    User.findOne({ first_name: req.query.first_name }) //  
+    User.findOne({ first_name: req.query.first_name }) //
       .then((user) => {
         res.json(user);
       })
@@ -23,7 +23,7 @@ router.get("/users", (req, res) => {
       });
   } else if (req.query && req.query.id) {
     // if (req.query && req.query.id) {  (traerlo por id)
-    User.findById({ _id: req.query.id }) //  
+    User.findById({ _id: req.query.id }) //
       .then((user) => {
         res.json(user);
       })
@@ -33,7 +33,7 @@ router.get("/users", (req, res) => {
         res.json({ error: "User doesnt exist" });
       });
   } else if (req.query.sort === "asc") {
-    User.find({rol : "client"})// fitra solo clientes
+    User.find({ rol: "client" }) // fitra solo clientes
       .then((users) => {
         users = users.sort((a, b) => a.first_name.localeCompare(b.first_name));
         res.json(users);
@@ -65,51 +65,37 @@ router.get("/users", (req, res) => {
   }
 });
 
-router.patch("/users", (req, res) => {
-  // get user by id
+router.patch("/users", async (req, res) => {
   if (req.query && req.query.id) {
-    User.findById(req.query.id)
-      .then((user) => {
-        if (!user) {
-          res.status(404);
-          console.log("error while querying the user");
-          res.json({ error: "User doesn't exist" });
-          return;
-        }
+    try {
+      const user = await User.findById(req.query.id);
 
-        // update the user object (patch)
-        user.first_name = req.body.first_name || user.first_name;
-        user.last_name = req.body.last_name || user.last_name;
-        user.email = req.body.email || user.email;
-        user.phone = req.body.phone || user.phone;
-        user.state = req.body.state || user.state;   //solo el admin puede controlarlo
-        user.password = req.body.password || user.password;
-        //user.tfa = req.body.tfa || user.tfa;
-        // actualiza aunque traiga un false:
-        user.tfa = req.body.hasOwnProperty('tfa') ? req.body.tfa : user.tfa;
+      if (!user) {
+        res.status(404).json({ error: "User doesn't exist" });
+        return;
+      }
 
+      const saltos = await bcrypt.genSalt(10);
+      const password = await bcrypt.hash(req.body.password, saltos);
 
-        user
-          .save()
-          .then((updatedUser) => {
-            res.status(200).json(updatedUser);
-          })
-          .catch((error) => {
-            res.status(422);
-            console.log("error while saving the user", error);
-            res.json({
-              error: "There was an error saving the user",
-            });
-          });
-      })
-      .catch((error) => {
-        res.status(404);
-        console.log("error while querying the user", error);
-        res.json({ error: "User doesn't exist" });
-      });
+      // update the user object (patch)
+      //el operador de fusión nula (??) se utiliza para establecer un valor predeterminado solo cuando el valor de la izquierda es null o undefined
+      user.first_name = req.body.first_name ?? user.first_name;
+      user.last_name = req.body.last_name ?? user.last_name;
+      user.email = req.body.email ?? user.email;
+      user.phone = req.body.phone ?? user.phone;
+      user.state = req.body.state ?? user.state; // solo el admin puede controlarlo
+      user.password = password ?? user.password;
+      //verifica si el objeto req.body tiene una propiedad llamada 'tfa'
+      user.tfa = req.body.hasOwnProperty("tfa") ? req.body.tfa : user.tfa;
+
+      const updatedUser = await user.save();
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      res.status(422).json({ error: "There was an error saving the user" });
+    }
   } else {
-    res.status(404);
-    res.json({ error: "User doesn't exist" });
+    res.status(404).json({ error: "User doesn't exist" });
   }
 });
 

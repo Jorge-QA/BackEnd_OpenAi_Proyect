@@ -18,7 +18,7 @@ const schemaRegister = Joi.object({
   last_name: Joi.string().min(3).max(255).required(),
   email: Joi.string().min(4).max(255).required().email(),
   phone: Joi.string().min(4).max(255).required(),
-  password: Joi.string().min(4).max(1024).required(),
+  password: Joi.string().max(1024).required(),
   rol: Joi.string().min(4).max(255).required(),
   state: Joi.string().min(4).max(255).required(),
   tfa: Joi.bool().required(), // para la autenticación de 2 factores
@@ -27,7 +27,7 @@ const schemaRegister = Joi.object({
 //esquema para validar login
 const schemaLogin = Joi.object({
   email: Joi.string().min(4).max(255).required().email(),
-  password: Joi.string().min(4).max(1024).required(),
+  password: Joi.string().max(1024).required(),
 });
 
 router.post("/login", async (req, res) => {

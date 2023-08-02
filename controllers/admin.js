@@ -65,6 +65,7 @@ router.get("/users", (req, res) => {
   }
 });
 
+// para el user al editar
 router.patch("/users", async (req, res) => {
   if (req.query && req.query.id) {
     try {
@@ -96,6 +97,50 @@ router.patch("/users", async (req, res) => {
     }
   } else {
     res.status(404).json({ error: "User doesn't exist" });
+  }
+});
+
+// para el admin al editar
+router.patch("/users/admin", (req, res) => {
+  // get user by id
+  if (req.query && req.query.id) {
+    User.findById(req.query.id)
+      .then((user) => {
+        if (!user) {
+          res.status(404);
+          console.log("error while querying the user");
+          res.json({ error: "User doesn't exist" });
+          return;
+        }
+
+        // update the user object (patch)
+        user.first_name = req.body.first_name || user.first_name;
+        user.last_name = req.body.last_name || user.last_name;
+        user.email = req.body.email || user.email;
+        user.phone = req.body.phone || user.phone;
+        user.state = req.body.state || user.state;
+
+        user
+          .save()
+          .then((updatedUser) => {
+            res.status(200).json(updatedUser);
+          })
+          .catch((error) => {
+            res.status(422);
+            console.log("error while saving the user", error);
+            res.json({
+              error: "There was an error saving the user",
+            });
+          });
+      })
+      .catch((error) => {
+        res.status(404);
+        console.log("error while querying the user", error);
+        res.json({ error: "User doesn't exist" });
+      });
+  } else {
+    res.status(404);
+    res.json({ error: "User doesn't exist" });
   }
 });
 

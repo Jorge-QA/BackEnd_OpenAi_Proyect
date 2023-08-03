@@ -36,7 +36,7 @@ const openAi =require("./controllers/openAiController")
 app.use('/api/session',authRoutes)
 // se ejecuta la validación antes de pasar a las rutas...
 ////ruta de obtención y mandejo de información de usuarios
-app.use('/api/admin',validateToken, admin) //
+app.use('/api/admin', admin) // Reactivar... probando autenticación...
 ////ruta de obtención y mandejo de información de prompts
 app.use('/api/handle',validateToken, prompts)
 ////ruta de api OpenAi

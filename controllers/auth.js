@@ -90,7 +90,6 @@ router.post("/register", async (req, res) => {
       .json({ error: true, mensaje: "Email ya registrado" });
   }
   //para trabajar con el link sin mandar correo
-  console.log("http://127.0.0.1:5500/client/autenticacion.html")
 
   //encriptar contraseña
   const saltos = await bcrypt.genSalt(10);
@@ -112,6 +111,8 @@ router.post("/register", async (req, res) => {
     res.json({
       data: userDB,
     });
+    //envío de correo con enlace
+    enviarCorreoAuth(userDB.email, userDB.first_name, userDB.id);
   } catch (error) {
     res.status(400).json({ error });
   }
@@ -124,14 +125,16 @@ router.post("/register", async (req, res) => {
 function enviarCorreoAuth(
   destinatario,
   nombreUsuario,
-  link
+  id
 ) {
   // Contenido del correo
   const asunto = "Autenticación de usuario APP Open AI";
   const mensaje =
     `Hola ${nombreUsuario},\n\n` + "Gracias por registrarte, solo falta un paso más, ingresa al link para autentificar tu correo\n\n" +
-    `Tu link de autenticación es: ${link}\n\n` +
+    `Tu link de autenticación es: http://127.0.0.1:5500/client/autenticacion.html?id=${id}\n\n` +
     "¡Gracias por utilizar nuestra app!";
+
+    console.log('http://127.0.0.1:5500/client/autenticacion.html?id=' + id)
 
   const correo = {
     to: destinatario,
@@ -144,21 +147,15 @@ function enviarCorreoAuth(
   };
 
   // Enviar el correo
-  sgMail
-    .send(correo)
-    .then(() => {
-      console.log("Correo enviado con éxito");
-    })
-    .catch((error) => {
-      console.error("Error al enviar el correo:", error);
-    });
+  // sgMail
+  //   .send(correo)
+  //   .then(() => {
+  //     console.log("Correo enviado con éxito");
+  //   })
+  //   .catch((error) => {
+  //     console.error("Error al enviar el correo:", error);
+  //   });
 }
-
-// Uso de la función para enviar el correo de autenticación
-// const correoDestino = 'jorge.q.a@hotmail.com'; // Cambiar por el correo del destinatario
-// const nombreUsuario = 'Jorge Quesada'; // Cambiar por el nombre del usuario
-// const link = 'http://127.0.0.1:5500/client/autenticacion.html'; // link para autenticar
-// enviarCorreoAuth(correoDestino, nombreUsuario, link);
 
 //Sirve para hacer archivos aparte
 module.exports = router;

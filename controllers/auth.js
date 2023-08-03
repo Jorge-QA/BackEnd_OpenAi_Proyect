@@ -1,3 +1,7 @@
+//Para el uso de envío de correos
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.TWILIO_KEY);
+
 //Para hacer nuestra ruta en un archivo separado
 const router = require("express").Router();
 
@@ -54,22 +58,28 @@ router.post("/login", async (req, res) => {
       id: user._id,
       rol: user.rol,
       state: user.state,
-      tfa : user.tfa
+      tfa: user.tfa,
     },
     process.env.TOKEN_SECRET
   );
-    // se devuelve el token en el header
+  // se devuelve el token en el header
   res.header("auth-token", token).json({
     error: null,
-    data: { token }
-  })
-})
+    data: { token },
+  });
+});
 
 router.post("/register", async (req, res) => {
   //validaciones de usuario(esquema)
   const { error } = schemaRegister.validate(req.body); //
   if (error) {
-    return res.status(400).json({ error: true, mensaje: "Valide los datos ingresados mayores a 4 caracteres y formato de correo válido" });
+    return res
+      .status(400)
+      .json({
+        error: true,
+        mensaje:
+          "Valide los datos ingresados mayores a 4 caracteres y formato de correo válido",
+      });
   }
 
   //valida si el correo ya está registrado
@@ -79,6 +89,8 @@ router.post("/register", async (req, res) => {
       .status(400)
       .json({ error: true, mensaje: "Email ya registrado" });
   }
+  //para trabajar con el link sin mandar correo
+  console.log("http://127.0.0.1:5500/client/autenticacion.html")
 
   //encriptar contraseña
   const saltos = await bcrypt.genSalt(10);
@@ -92,7 +104,7 @@ router.post("/register", async (req, res) => {
     password: password,
     rol: req.body.rol,
     state: req.body.state,
-    tfa: req.body.tfa
+    tfa: req.body.tfa,
   });
 
   try {
@@ -104,6 +116,49 @@ router.post("/register", async (req, res) => {
     res.status(400).json({ error });
   }
 });
+
+
+
+// Configuración del envío del correo
+
+function enviarCorreoAuth(
+  destinatario,
+  nombreUsuario,
+  link
+) {
+  // Contenido del correo
+  const asunto = "Autenticación de usuario APP Open AI";
+  const mensaje =
+    `Hola ${nombreUsuario},\n\n` + "Gracias por registrarte, solo falta un paso más, ingresa al link para autentificar tu correo\n\n" +
+    `Tu link de autenticación es: ${link}\n\n` +
+    "¡Gracias por utilizar nuestra app!";
+
+  const correo = {
+    to: destinatario,
+    from: {
+      name: "Open AI APP",
+      email: "quesadaartaviajorge@gmail.com", // correo registrado en twilio
+    },
+    subject: asunto,
+    text: mensaje,
+  };
+
+  // Enviar el correo
+  sgMail
+    .send(correo)
+    .then(() => {
+      console.log("Correo enviado con éxito");
+    })
+    .catch((error) => {
+      console.error("Error al enviar el correo:", error);
+    });
+}
+
+// Uso de la función para enviar el correo de autenticación
+// const correoDestino = 'jorge.q.a@hotmail.com'; // Cambiar por el correo del destinatario
+// const nombreUsuario = 'Jorge Quesada'; // Cambiar por el nombre del usuario
+// const link = 'http://127.0.0.1:5500/client/autenticacion.html'; // link para autenticar
+// enviarCorreoAuth(correoDestino, nombreUsuario, link);
 
 //Sirve para hacer archivos aparte
 module.exports = router;

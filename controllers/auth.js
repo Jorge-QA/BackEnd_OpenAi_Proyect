@@ -1,6 +1,11 @@
 //Para el uso de envío de correos
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.TWILIO_KEY);
+//para el uso de envío de mensajes
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = require('twilio')(accountSid, authToken);
+const verifySid = process.env.TWILIO_VERIFY_SID;
 
 //Para hacer nuestra ruta en un archivo separado
 const router = require("express").Router();
@@ -49,7 +54,7 @@ router.post("/login", async (req, res) => {
   if (!validPassword)
     return res
       .status(400)
-      .json({ error: true, mensaje: "contraseña inválida" });
+      .json({ error: true, mensaje: "Valide sus datos de inicio de sesión" });
 
   //acá creamos el token
   const token = jwt.sign(
@@ -156,6 +161,31 @@ function enviarCorreoAuth(
   //     console.error("Error al enviar el correo:", error);
   //   });
 }
+
+
+// Download the helper library from https://www.twilio.com/docs/node/install
+// Set environment variables for your credentials
+// Read more at http://twil.io/secure
+
+//ejemplo sms y validación
+
+// client.verify.v2
+//   .services(verifySid)
+//   .verifications.create({ to: "+50683151689", channel: "sms" })
+//   .then((verification) => console.log(verification.status))
+//   .then(() => {
+//     const readline = require("readline").createInterface({
+//       input: process.stdin,
+//       output: process.stdout,
+//     });
+//     readline.question("Please enter the OTP:", (otpCode) => {
+//       client.verify.v2
+//         .services(verifySid)
+//         .verificationChecks.create({ to: "+50683151689", code: otpCode })
+//         .then((verification_check) => console.log(verification_check.status))
+//         .then(() => readline.close());
+//     });
+//   });
 
 //Sirve para hacer archivos aparte
 module.exports = router;

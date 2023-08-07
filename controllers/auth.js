@@ -64,7 +64,7 @@ router.post("/login", async (req, res) => {
 
   //podemos enviar el sms si se tiene activo el tfa
   if (user.tfa) {
-    sendMessage(user.first_name, formattedNumber);
+    //sendMessage(user.first_name, formattedNumber);
     console.log("Esta activa la tfa");
   }
 
@@ -128,7 +128,7 @@ router.post("/register", async (req, res) => {
       data: userDB,
     });
     //envío de correo con enlace
-    enviarCorreoAuth(userDB.email, userDB.first_name, userDB.id);
+    //enviarCorreoAuth(userDB.email, userDB.first_name, userDB.id);
   } catch (error) {
     res.status(400).json({ error });
   }

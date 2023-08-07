@@ -64,7 +64,7 @@ router.post("/login", async (req, res) => {
 
   //podemos enviar el sms si se tiene activo el tfa
   if (user.tfa) {
-    //sendMessage(user.first_name, formattedNumber);
+    sendMessage(user.first_name, formattedNumber);
     console.log("Esta activa la tfa");
   }
 
@@ -180,10 +180,20 @@ function sendMessage(name, code) {
     .catch((error) => console.error(error));
 }
 
-//'prueba:
+// 'prueba:
 const name = "Jorginho"
 const code = "1225"
-sendMessage(name, code)
+//sendMessage(name, code)
+
+
+// client.messages
+// .create({
+//   body: `Hola CUCA tu código es el: 1212`,
+//   from: twilioPhone,
+//   to: miPhone,
+// })
+// .then((message) => console.log(message.sid))
+// .catch((error) => console.error(error));
 
 //Sirve para hacer archivos aparte
 module.exports = router;

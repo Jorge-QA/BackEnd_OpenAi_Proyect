@@ -169,15 +169,27 @@ function enviarCorreoAuth(destinatario, nombreUsuario, id) {
 }
 
 //Función para envío de sms
-function sendMessage(name, code) {
-  client.messages
-    .create({
-      body: `Hola ${name} tu código es el:  ${code}`,
+// function sendMessage(name, code) {
+//   client.messages
+//     .create({
+//       body: `Hola ${name} tu código es el:  ${code}`,
+//       from: twilioPhone,
+//       to: miPhone,
+//     })
+//     .then((message) => console.log(message.sid))
+//     .catch((error) => console.error(error));
+// }
+async function sendMessage(name, code) {
+  try {
+    const message = await client.messages.create({
+      body: `Hola ${name} tu código es el: ${code}`,
       from: twilioPhone,
       to: miPhone,
-    })
-    .then((message) => console.log(message.sid))
-    .catch((error) => console.error(error));
+    });
+    console.log(message.sid);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 // 'prueba:

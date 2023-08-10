@@ -134,37 +134,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// function enviarCorreoAuth(destinatario, nombreUsuario, id) {
-//   // Contenido del correo
-//   const asunto = "Autenticación de usuario APP Open AI";
-//   const mensaje =
-//     `Hola ${nombreUsuario},\n\n` +
-//     "Gracias por registrarte, solo falta un paso más, ingresa al link para autentificar tu correo\n\n" +
-//     `Tu link de autenticación es: http://127.0.0.1:5500/client/autenticacion.html?id=${id}\n\n` +
-//     "¡Gracias por utilizar nuestra app!";
-
-//   console.log("http://127.0.0.1:5500/client/autenticacion.html?id=" + id);
-
-//   const correo = {
-//     to: destinatario,
-//     from: {
-//       name: "Open AI APP",
-//       email: "quesadaartaviajorge@gmail.com", // correo registrado en twilio
-//     },
-//     subject: asunto,
-//     text: mensaje,
-//   };
-
-//   // Enviar el correo
-//   sgMail
-//     .send(correo)
-//     .then(() => {
-//       console.log("Correo enviado con éxito");
-//     })
-//     .catch((error) => {
-//       console.error("Error al enviar el correo:", error);
-//     });
-// }
 
 // Configuración del envío del correo async
 async function enviarCorreoAuth(destinatario, nombreUsuario, id) {
@@ -197,9 +166,6 @@ async function enviarCorreoAuth(destinatario, nombreUsuario, id) {
   }
 }
 
-
-
-
 //Función async para Envío de sms
 async function sendMessage(name, code) {
   try {
@@ -215,9 +181,9 @@ async function sendMessage(name, code) {
 }
 
 // 'prueba:
-const name = "Jorginho"
+const name = "Jorginho Quesada"
 const code = "1225"
-// sendMessage(name, code)
+//sendMessage(name, code)
 
 //Sirve para hacer archivos aparte
 module.exports = router;

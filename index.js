@@ -30,7 +30,7 @@ const validateToken = require("./controllers/validateToken");
 const admin = require("./controllers/admin");
 const prompts =require("./controllers/prompt");
 const openAi =require("./controllers/openAiController");
-const autentication =require("./controllers/admin");
+const autentication =require("./controllers/auth");
 
 
 // route middlewares para validaciónes
@@ -45,6 +45,7 @@ app.use('/api/handle',validateToken, prompts)
 app.use('/api/openAi',validateToken, openAi)
 //para la autenticación por correo
 app.use('/api/email',autentication) 
+app.use('/api/email', admin) 
 
 
 // iniciar server

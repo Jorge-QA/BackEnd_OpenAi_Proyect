@@ -144,6 +144,45 @@ router.patch("/users/admin", (req, res) => {
   }
 });
 
+// para autentificar correo
+router.patch("/users/auth", (req, res) => {
+  // get user by id
+  if (req.query && req.query.id) {
+    User.findById(req.query.id)
+      .then((user) => {
+        if (!user) {
+          res.status(404);
+          console.log("error while querying the user");
+          res.json({ error: "User doesn't exist" });
+          return;
+        }
+
+        // update the user object (patch)
+        user.state = req.body.state || user.state;
+        user
+          .save()
+          .then((updatedUser) => {
+            res.status(200).json(updatedUser);
+          })
+          .catch((error) => {
+            res.status(422);
+            console.log("error while saving the user", error);
+            res.json({
+              error: "There was an error saving the user",
+            });
+          });
+      })
+      .catch((error) => {
+        res.status(404);
+        console.log("error while querying the user", error);
+        res.json({ error: "User doesn't exist" });
+      });
+  } else {
+    res.status(404);
+    res.json({ error: "User doesn't exist" });
+  }
+});
+
 //elimina un usuario
 router.delete("/users", (req, res) => {
   // get user by id

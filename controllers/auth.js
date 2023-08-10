@@ -62,10 +62,10 @@ router.post("/login", async (req, res) => {
   const randomNumber = Math.floor(Math.random() * 10000);
   const formattedNumber = String(randomNumber).padStart(4, "0");
 
-  //podemos enviar el sms si se tiene activo el tfa
-  if (user.tfa) {
-    //sendMessage(user.first_name, formattedNumber);
-    console.log("Esta activa la tfa");
+  //podemos enviar el sms si se tiene activo el tfa y está activo.
+  if (user.tfa && user.state === "activo") {
+    sendMessage(user.first_name, formattedNumber);
+    console.log("Tfa Activa");
   }
 
   //acá creamos el token
@@ -128,57 +128,79 @@ router.post("/register", async (req, res) => {
       data: userDB,
     });
     //envío de correo con enlace
-    //enviarCorreoAuth(userDB.email, userDB.first_name, userDB.id);
+    enviarCorreoAuth(userDB.email, userDB.first_name, userDB.id);
   } catch (error) {
     res.status(400).json({ error });
   }
 });
 
-// Configuración del envío del correo
+// function enviarCorreoAuth(destinatario, nombreUsuario, id) {
+//   // Contenido del correo
+//   const asunto = "Autenticación de usuario APP Open AI";
+//   const mensaje =
+//     `Hola ${nombreUsuario},\n\n` +
+//     "Gracias por registrarte, solo falta un paso más, ingresa al link para autentificar tu correo\n\n" +
+//     `Tu link de autenticación es: http://127.0.0.1:5500/client/autenticacion.html?id=${id}\n\n` +
+//     "¡Gracias por utilizar nuestra app!";
 
-function enviarCorreoAuth(destinatario, nombreUsuario, id) {
-  // Contenido del correo
-  const asunto = "Autenticación de usuario APP Open AI";
-  const mensaje =
-    `Hola ${nombreUsuario},\n\n` +
-    "Gracias por registrarte, solo falta un paso más, ingresa al link para autentificar tu correo\n\n" +
-    `Tu link de autenticación es: http://127.0.0.1:5500/client/autenticacion.html?id=${id}\n\n` +
-    "¡Gracias por utilizar nuestra app!";
+//   console.log("http://127.0.0.1:5500/client/autenticacion.html?id=" + id);
 
-  console.log("http://127.0.0.1:5500/client/autenticacion.html?id=" + id);
+//   const correo = {
+//     to: destinatario,
+//     from: {
+//       name: "Open AI APP",
+//       email: "quesadaartaviajorge@gmail.com", // correo registrado en twilio
+//     },
+//     subject: asunto,
+//     text: mensaje,
+//   };
 
-  const correo = {
-    to: destinatario,
-    from: {
-      name: "Open AI APP",
-      email: "quesadaartaviajorge@gmail.com", // correo registrado en twilio
-    },
-    subject: asunto,
-    text: mensaje,
-  };
+//   // Enviar el correo
+//   sgMail
+//     .send(correo)
+//     .then(() => {
+//       console.log("Correo enviado con éxito");
+//     })
+//     .catch((error) => {
+//       console.error("Error al enviar el correo:", error);
+//     });
+// }
 
-  // Enviar el correo
-  sgMail
-    .send(correo)
-    .then(() => {
-      console.log("Correo enviado con éxito");
-    })
-    .catch((error) => {
-      console.error("Error al enviar el correo:", error);
-    });
+// Configuración del envío del correo async
+async function enviarCorreoAuth(destinatario, nombreUsuario, id) {
+  try {
+    // Contenido del correo
+    const asunto = "Autenticación de usuario APP Open AI";
+    const mensaje =
+      `Hola ${nombreUsuario},\n\n` +
+      "Gracias por registrarte, solo falta un paso más, ingresa al link para autentificar tu correo\n\n" +
+      `Tu link de autenticación es: http://127.0.0.1:5500/client/autenticacion.html?id=${id}\n\n` +
+      "¡Gracias por utilizar nuestra app!";
+
+    console.log("http://127.0.0.1:5500/client/autenticacion.html?id=" + id);
+
+    const correo = {
+      to: destinatario,
+      from: {
+        name: "Open AI APP",
+        email: "quesadaartaviajorge@gmail.com", // correo registrado en twilio
+      },
+      subject: asunto,
+      text: mensaje,
+    };
+
+    // Enviar el correo usando await
+    await sgMail.send(correo);
+    console.log("Correo enviado con éxito");
+  } catch (error) {
+    console.error("Error al enviar el correo:", error);
+  }
 }
 
-//Función para envío de sms
-// function sendMessage(name, code) {
-//   client.messages
-//     .create({
-//       body: `Hola ${name} tu código es el:  ${code}`,
-//       from: twilioPhone,
-//       to: miPhone,
-//     })
-//     .then((message) => console.log(message.sid))
-//     .catch((error) => console.error(error));
-// }
+
+
+
+//Función async para Envío de sms
 async function sendMessage(name, code) {
   try {
     const message = await client.messages.create({
@@ -195,17 +217,7 @@ async function sendMessage(name, code) {
 // 'prueba:
 const name = "Jorginho"
 const code = "1225"
-//sendMessage(name, code)
-
-
-// client.messages
-// .create({
-//   body: `Hola CUCA tu código es el: 1212`,
-//   from: twilioPhone,
-//   to: miPhone,
-// })
-// .then((message) => console.log(message.sid))
-// .catch((error) => console.error(error));
+// sendMessage(name, code)
 
 //Sirve para hacer archivos aparte
 module.exports = router;

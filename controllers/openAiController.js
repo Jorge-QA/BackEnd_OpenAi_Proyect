@@ -25,7 +25,7 @@ router.post("/completion", async (req, res) => {
     const response = await openai.createCompletion({
       model: "text-davinci-003",
       prompt: input,
-      max_tokens: 50,
+      max_tokens: 100,
     });
 
     // Enviar la respuesta del API de OpenAI al cliente

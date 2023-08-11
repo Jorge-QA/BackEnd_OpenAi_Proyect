@@ -3,6 +3,11 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv'); // Agrega esta línea para cargar las variables de entorno
 dotenv.config(); // Carga las variables de entorno del archivo .env
 
+//para utilizar GraphQl
+const {graphqlHTTP} = require("express-graphql"); // le puse llaves para que funcionara
+const { graphQLschema } = require("./graphql-schema.js");
+//const { graphQLschema } = require("../GraphQL/graphql-schema"); // no me está funcionando la ruta en la carpeta GraphQL
+
 // database connection
 const db = mongoose.connect(process.env.DB_Connection, {
   useNewUrlParser: true,
@@ -46,6 +51,34 @@ app.use('/api/openAi',validateToken, openAi)
 //para la autenticación por correo
 app.use('/api/email',autentication) 
 app.use('/api/email', admin) 
+
+const {promptsGet} = require("./controllers/promptsController.js");
+//const {usersGet} = require("./controllers/usersController.js");
+
+// expose in the root element the different entry points of the
+// graphQL service
+const graphqlResolvers = {
+  prompts: promptsGet,
+  //users: usersGet,
+  hello: function () {
+    return "Hola Mundo";
+  },
+  version: function () {
+    return "1.0";
+  },
+};
+
+// para utilizar GraphQl
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema: graphQLschema,
+    rootValue: graphqlResolvers,
+    graphiql: true,
+  })
+);
+
+// http://localhost:3001/graphql    para abrir en navegador GraphiQl
 
 
 // iniciar server

@@ -8,8 +8,9 @@ const Prompt = require("../models/promptModel");
 //     if(error) {
 //       console.log('there was an error', error);
 //     }
+//     console.log(prompts)
 //     return prompts;
-//   }).populate('user').exec();
+//   });
 // };
 
 const promptGet = async (req, res) => {

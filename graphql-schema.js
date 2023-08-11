@@ -7,14 +7,16 @@ exports.graphQLschema = buildSchema(`
   }
   
   type Prompt {
-    _id: ID!
-    name: String
-    input: String
-  }
-
-
-
-  `);
+    _id: ID!,
+    name: String!,
+    type: String!,
+    tags: [String],
+    input: String!,
+    n: String,
+    size: String,
+    user: String!,
+    response: [String]
+  }`);
 
   //    user: [User]
   

@@ -52,13 +52,13 @@ app.use('/api/openAi',validateToken, openAi)
 app.use('/api/email',autentication) 
 app.use('/api/email', admin) 
 
-const {promptsGet} = require("./controllers/promptsController.js");
+const {promptGet} = require("./controllers/promptsController.js");
 //const {usersGet} = require("./controllers/usersController.js");
 
 // expose in the root element the different entry points of the
 // graphQL service
 const graphqlResolvers = {
-  prompts: promptsGet,
+  prompts: promptGet,
   //users: usersGet,
   hello: function () {
     return "Hola Mundo";
@@ -78,9 +78,7 @@ app.use(
   })
 );
 
-
 // http://localhost:3001/graphql    para abrir en navegador GraphiQl
-
 
 // iniciar server
 app.listen(3001, () => console.log(`Servidor corriendo en puerto: 3001!`))

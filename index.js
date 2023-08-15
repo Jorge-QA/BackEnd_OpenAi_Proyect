@@ -61,7 +61,7 @@ const graphqlResolvers = {
   prompts: promptGet,
   ByName: promptsByName,
   ByTags: promptsByTags,
-  ByUser: userPrompt,
+  userPrompt: userPrompt,
 };
 
 // para utilizar GraphQl

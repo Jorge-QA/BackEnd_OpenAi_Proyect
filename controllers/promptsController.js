@@ -27,20 +27,23 @@ const promptsByName = async ({ user, name }) => {
   try {
     const prompts = await Prompt.find({
       user: user,
+      //$regex se utiliza para realizar una búsqueda basada en una expresión regular.
+      //$options para que la busqueda no sea case-sensitive
       name: { $regex: name, $options: "i" },
     });
     return prompts;
   } catch (err) {
-    throw new Error("Hubo un error al buscar el promt por nombre");
+    throw new Error("Hubo un error al buscar el prompt por nombre");
   }
 };
 
 const promptsByTags = async ({ user, tags }) => {
   try {
-    const prompts = await Prompt.find({ user: user, tags: { $in: tags } });
+    //El operador $in se utiliza para buscar documentos donde el valor del campo tags esté presente en una lista de valores proporcionados
+    const prompts = await Prompt.find({ user: user, tags: { $in: tags.map(tag => new RegExp(tag, 'i')) } });
     return prompts;
   } catch (err) {
-    throw new Error("Hubo un error al buscar el promt por tags");
+    throw new Error("Hubo un error al buscar el prompt por tags");
   }
 };
 
@@ -49,7 +52,7 @@ const userPrompt = async ({user}) => {
     const prompts = await Prompt.find({ user: user });
     return prompts;
   } catch (err) {
-    throw new Error("Hubo un error al buscar los promts del usuario");
+    throw new Error("Hubo un error al buscar los prompts del usuario");
   }
 };
 

@@ -1,9 +1,10 @@
 const { buildSchema } = require('graphql');
 exports.graphQLschema = buildSchema(`
   type Query {
+    userPrompt(user: String!): [Prompt]
+    promptsByName(user: String!, name: String!): [Prompt]
+    promptsByTags(user: String!, tags: String!): [Prompt]
     prompts: [Prompt]
-    hello: String
-    version: String
   }
   
   type Prompt {

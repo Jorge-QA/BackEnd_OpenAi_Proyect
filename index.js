@@ -52,20 +52,16 @@ app.use('/api/openAi',validateToken, openAi)
 app.use('/api/email',autentication) 
 app.use('/api/email', admin) 
 
-const {promptGet} = require("./controllers/promptsController.js");
+const {promptGet, promptsByName, promptsByTags, userPrompt} = require("./controllers/promptsController.js");
 //const {usersGet} = require("./controllers/usersController.js");
 
 // expose in the root element the different entry points of the
 // graphQL service
 const graphqlResolvers = {
   prompts: promptGet,
-  //users: usersGet,
-  hello: function () {
-    return "Hola Mundo";
-  },
-  version: function () {
-    return "1.0";
-  },
+  ByName: promptsByName,
+  ByTags: promptsByTags,
+  ByUser: userPrompt,
 };
 
 // para utilizar GraphQl

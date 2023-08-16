@@ -6,7 +6,7 @@ dotenv.config(); // Carga las variables de entorno del archivo .env
 //para utilizar GraphQl
 const { graphqlHTTP } = require("express-graphql"); // le puse llaves para que funcionara
 const { graphQLschema } = require("./graphql-schema.js");
-//const { graphQLschema } = require("../GraphQL/graphql-schema"); // no me está funcionando la ruta en la carpeta GraphQL
+//const  {graphQLschema}  = require("../GraphQL/graphql-schema"); // no me está funcionando la ruta en la carpeta GraphQL
 
 // database connection
 const db = mongoose.connect(process.env.DB_Connection, {

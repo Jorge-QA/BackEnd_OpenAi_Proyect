@@ -40,18 +40,18 @@ const openAi = require("./controllers/openAiController");
 const autentication = require("./controllers/auth");
 
 // route middlewares para validaciónes
-//ruta de validacciones de login y registro de usuario
+//ruta de validaciones de login(creamos token) y registro/envío de correo de usuario
 app.use("/api/session", authRoutes);
 // se ejecuta la validación antes de pasar a las rutas...
-////ruta de obtención y mandejo de información de usuarios
+//ruta de obtención y mandejo de información de usuarios
 app.use("/api/admin", validateToken, admin);
-////ruta de obtención y mandejo de información de prompts
+//ruta de obtención y mandejo de información de prompts
 app.use("/api/handle", validateToken, prompts);
-////ruta de api OpenAi
+//ruta de api OpenAi
 app.use("/api/openAi", validateToken, openAi);
 //para la autenticación por correo
-app.use("/api/email", autentication);
-app.use("/api/email", admin);
+app.use("/api/email", autentication);//envía correo
+app.use("/api/email", admin);//actualiza estado de usuario
 
 const {
   promptGet,
@@ -72,7 +72,7 @@ const graphqlResolvers = {
 
 // para utilizar GraphQl
 app.use(
-  "/graphql",
+  "/graphql",validateToken,
   graphqlHTTP({
     schema: graphQLschema,
     rootValue: graphqlResolvers,

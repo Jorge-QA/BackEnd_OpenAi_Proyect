@@ -7,6 +7,7 @@ const verifyToken = (req, res, next) => {
     try {
         const verificar = jwt.verify(token, process.env.TOKEN_SECRET)
         req.user = verificar
+        //si se decodifica correctamente, otorga permiso para continuar
         next()
     } catch (error) {
         res.status(400).json({error: 'token no es válido'})
